@@ -17,6 +17,7 @@ package com.zhihu.matisse.internal.ui;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -91,26 +92,47 @@ public class MediaSelectionFragment extends Fragment implements
         super.onActivityCreated(savedInstanceState);
         Album album = getArguments().getParcelable(EXTRA_ALBUM);
 
-        mAdapter = new AlbumMediaAdapter(getContext(),
-                mSelectionProvider.provideSelectedItemCollection(), mRecyclerView);
-        mAdapter.registerCheckStateListener(this);
-        mAdapter.registerOnMediaClickListener(this);
+//        mAdapter = new AlbumMediaAdapter(getContext(),
+//                mSelectionProvider.provideSelectedItemCollection(), mRecyclerView);
+//        mAdapter.registerCheckStateListener(this);
+//        mAdapter.registerOnMediaClickListener(this);
         mRecyclerView.setHasFixedSize(true);
 
-        int spanCount;
-        SelectionSpec selectionSpec = SelectionSpec.getInstance();
+        final int spanCount;
+        final SelectionSpec selectionSpec = SelectionSpec.getInstance();
         if (selectionSpec.gridExpectedSize > 0) {
             spanCount = UIUtils.spanCount(getContext(), selectionSpec.gridExpectedSize);
         } else {
             spanCount = selectionSpec.spanCount;
         }
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
-
+        //debug----
+        GridLayoutManager loMngr=new GridLayoutManager(getContext(), spanCount);
+        loMngr.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if(selectionSpec.hasHeader() && position==0){return spanCount;}
+                return 1;
+            }
+        });
+        mRecyclerView.setLayoutManager(loMngr);
         int spacing = getResources().getDimensionPixelSize(R.dimen.media_grid_spacing);
-        mRecyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
+        mRecyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false,selectionSpec.hasHeader()));
+        //debgu,adp
+        mAdapter = new AlbumMediaAdapter(getContext(),
+                mSelectionProvider.provideSelectedItemCollection(), mRecyclerView);
+        mAdapter.registerCheckStateListener(this);
+        mAdapter.registerOnMediaClickListener(this);
+        //----
         mRecyclerView.setAdapter(mAdapter);
         mAlbumMediaCollection.onCreate(getActivity(), this);
         mAlbumMediaCollection.load(album, selectionSpec.capture);
+        //debug
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                super.onDrawOver(c, parent, state);
+            }
+        },0);
     }
 
     @Override

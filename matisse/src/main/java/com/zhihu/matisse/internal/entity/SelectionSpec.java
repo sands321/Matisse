@@ -56,6 +56,12 @@ public final class SelectionSpec {
     public int originalMaxSize;
     public OnCheckedListener onCheckedListener;
 
+    //debug
+    public int res_header;
+    public boolean hasHeader(){
+        return res_header>0;
+    }
+
     private SelectionSpec() {
     }
 

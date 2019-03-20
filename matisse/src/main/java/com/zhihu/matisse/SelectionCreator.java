@@ -101,6 +101,16 @@ public final class SelectionCreator {
         mSelectionSpec.orientation = SCREEN_ORIENTATION_UNSPECIFIED;
     }
 
+    //--cheng-------------------------
+
+    public SelectionCreator setHeaderRes(int res_header) {
+        mSelectionSpec.res_header = res_header;
+        return this;
+    }
+
+
+    //---------------------------
+
     /**
      * Whether to show only one media type if choosing medias are only images or videos.
      *

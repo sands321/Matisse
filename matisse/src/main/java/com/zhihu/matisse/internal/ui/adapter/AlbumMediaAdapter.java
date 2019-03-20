@@ -61,10 +61,57 @@ public class AlbumMediaAdapter extends
         ta.recycle();
 
         mRecyclerView = recyclerView;
+        //debug
+        hasHeader=mSelectionSpec.hasHeader();
+    }
+
+    //---------------------------
+    private View loHeader;
+    public static final int Type_Header=-1000;
+    @Override
+    public int getItemViewType(int position) {
+        if(isHeader(position)){return Type_Header;}
+        return super.getItemViewType(getFixPos(position));
+    }
+    public boolean isHeader(int pos){
+        if(!hasHeader){return false;}
+        return pos==0;
+    }
+    public boolean hasHeader=false;
+
+    public int getFixPos(int pos){
+        return hasHeader?pos-1:pos;
     }
 
     @Override
+    public int getItemCount() {
+        int fix=hasHeader?1:0;
+        return super.getItemCount()+fix;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if(isHeader(position)){return 0;}
+        return super.getItemId(getFixPos(position));
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if(isHeader(position)){return;}
+        super.onBindViewHolder(holder, getFixPos(position));
+    }
+    //---------------------------
+
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType==Type_Header){
+            if(loHeader==null){
+                loHeader = LayoutInflater.from(parent.getContext()).inflate(mSelectionSpec.res_header,parent,false);
+//                ViewGroup.LayoutParams lp=loHeader.getLayoutParams();
+//                lp.height=z_getItemW(parent.getContext());
+            }
+            return new RecyclerView.ViewHolder(loHeader){};
+        }
         if (viewType == VIEW_TYPE_CAPTURE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.photo_capture_item, parent, false);
             CaptureViewHolder holder = new CaptureViewHolder(v);
@@ -254,6 +301,21 @@ public class AlbumMediaAdapter extends
             mImageResize = (int) (mImageResize * mSelectionSpec.thumbnailScale);
         }
         return mImageResize;
+    }
+
+    //debug-------
+    private int z_itemW=0;
+    private int z_getItemW(Context context) {
+        if (z_itemW == 0) {
+            RecyclerView.LayoutManager lm = mRecyclerView.getLayoutManager();
+            int spanCount = ((GridLayoutManager) lm).getSpanCount();
+            int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+            int availableWidth = screenWidth - context.getResources().getDimensionPixelSize(
+                    R.dimen.media_grid_spacing) * (spanCount - 1);
+            z_itemW = availableWidth / spanCount;
+//            mImageResize = (int) (mImageResize * mSelectionSpec.thumbnailScale);
+        }
+        return z_itemW;
     }
 
     public interface CheckStateListener {

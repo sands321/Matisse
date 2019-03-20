@@ -25,16 +25,27 @@ public class MediaGridInset extends RecyclerView.ItemDecoration {
     private int mSpacing;
     private boolean mIncludeEdge;
 
-    public MediaGridInset(int spanCount, int spacing, boolean includeEdge) {
+    public boolean z_hasHeader=false;
+
+    public MediaGridInset(int spanCount, int spacing, boolean includeEdge,boolean z_hasHeader) {
+//    public MediaGridInset(int spanCount, int spacing, boolean includeEdge) {
         this.mSpanCount = spanCount;
         this.mSpacing = spacing;
         this.mIncludeEdge = includeEdge;
+        //debug
+        this.z_hasHeader=z_hasHeader;
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
         int position = parent.getChildAdapterPosition(view); // item position
+        //debug
+        if(z_hasHeader){
+            if(position==0){return;}
+            position--;
+        }
+        //-----
         int column = position % mSpanCount; // item column
 
         if (mIncludeEdge) {

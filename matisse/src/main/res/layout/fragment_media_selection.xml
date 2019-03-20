@@ -19,6 +19,8 @@
              android:layout_height="match_parent"
              android:background="?attr/page.bg">
 
+    <!--debug-->
+    <!--android:paddingTop="@dimen/media_grid_spacing"-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
@@ -26,6 +28,6 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/media_grid_spacing"
-        android:paddingTop="@dimen/media_grid_spacing"/>
+        android:paddingTop="0dp"/>
 
 </FrameLayout>
