@@ -1,3 +1,21 @@
+## Note
+
+Modified by ZhiHu Matisse.
+1.Support add RecyclerView header.
+
+[Jitpack](https://jitpack.io/#sands321/matisse)
+
+Gradle:
+
+```groovy
+
+dependencies {
+    implementation 'com.github.sands321:matisse:0.5.2-beta4-r1'
+}
+```
+-----
+
+
 ![Image](/image/banner.png)
 
 # Matisse
